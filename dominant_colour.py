@@ -1,29 +1,49 @@
 import numpy as np
 import pandas as pd
+import time
 from cv2 import cv2
 from sklearn.cluster import KMeans
 from skimage import io
 
 
 def get_dominant_colour(img_url, timing=False):
+    if timing:
+        start = time.perf_counter()
+        tic = time.perf_counter()
     img = io.imread(img_url)
+    if timing:
+        toc = time.perf_counter()
+        print(f"Loaded the image in {toc - tic:0.4f} seconds")
     img = img.reshape((-1, 3))
 
-    cluster = KMeans(n_clusters=5, n_init=3, max_iter=10, tol=0.01)
+    if timing:
+        tic = time.perf_counter()
+    cluster = KMeans(n_clusters=5, n_init=3, max_iter=10, tol=0.001)
     cluster.fit(img)
+    if timing:
+        toc = time.perf_counter()
+        print(f"KMeans calculation in {toc - tic:0.4f} seconds")
 
     labels = cluster.labels_
-    labels = list(labels)
     centroid = cluster.cluster_centers_
 
+    if timing:
+        tic = time.perf_counter()
     percent = []
+    _, counts = np.unique(labels, return_counts=True)
     for i in range(len(centroid)):
-        j = labels.count(i)
+        j = counts[i]
         j = j/(len(labels))
         percent.append(j)
+    if timing:
+        toc = time.perf_counter()
+        print(f"Percentage calculation in {toc - tic:0.4f} seconds")
 
     indices = np.argsort(percent)[::-1]
     dominant = centroid[indices[0]]
+    if timing:
+        end = time.perf_counter()
+        print(f"get_dominant_colour execution in {end - start:0.4f} seconds")
 
     return dominant, cluster, centroid
 
