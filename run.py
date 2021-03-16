@@ -1,12 +1,53 @@
+import matplotlib.pyplot as plt
 import numpy as np
-from cv2 import cv2
-from dominant_colour import get_dominant_colour, visualise_colours
+from dominant_colour import cv2_dominant_colour, fast_dominant_colour, skimage_dominant_colour, visualise_colours
+from skimage import io
 
-img_url = 'https://images-na.ssl-images-amazon.com/images/I/81HmoJNlUnL._AC_SL1500_.jpg'
-dominant, cluster, centroid = get_dominant_colour(img_url, timing=True)
+colour_list = [5, 10, 15]
+# Image 1: 6 Nimmt, mostly yellow; Image 2: Altiplano, a wide gamut of colours
+img_urls = {'6 Nimmt!': 'https://images-na.ssl-images-amazon.com/images/I/81HmoJNlUnL._AC_SL1500_.jpg',
+            'Altiplano': 'https://cf.geekdo-images.com/hgUDu_oG0uhnOWX4WM2vXA__imagepage/img/dDNwKBxSKDViEa1EcHh1QiM8cM4=/fit-in/900x600/filters:no_upscale():strip_icc()/pic4070329.jpg'}
 
-# Display most dominant colors
-visualise = visualise_colours(cluster, cluster.cluster_centers_)
-visualise = cv2.cvtColor(visualise, cv2.COLOR_RGB2BGR)
-cv2.imshow('visualise', visualise)
-cv2.waitKey()
+for name, img_url in img_urls.items():
+    for colours in colour_list:
+        # Call each method to determine dominant colour
+        dominant_cv2, labels_cv2, centroids_cv2, time_cv2 = cv2_dominant_colour(
+            img_url, colours=colours, timing=True)
+        dominant_skimage, labels_skimage, centroids_skimage, time_skimage = skimage_dominant_colour(
+            img_url, colours=colours, timing=True)
+        dominant_fast, labels_fast, centroids_fast, time_fast = fast_dominant_colour(
+            img_url, colours=colours, timing=True)
+        dominant_faster, labels_faster, centroids_faster, time_faster = fast_dominant_colour(
+            img_url, colours=colours, timing=True, scale=0.1)
+
+        # Return image of most dominant colours in histogram
+        visualise_cv2 = visualise_colours(labels_cv2, centroids_cv2)
+        visualise_skimage = visualise_colours(
+            labels_skimage, centroids_skimage)
+        visualise_fast = visualise_colours(labels_fast, centroids_fast)
+        visualise_faster = visualise_colours(labels_faster, centroids_faster)
+
+        # Plot images next to colour bars
+        fig = plt.figure()
+        ax = plt.subplot2grid((4, 2), (0, 0), rowspan=4)
+        img = io.imread(img_url)
+        ax.imshow(img)
+        ax.axis('off')
+        ax0 = plt.subplot2grid((4, 2), (0, 1))
+        ax0.imshow(visualise_cv2)
+        ax0.set_title(f'CV2 Method in {time_cv2:0.4f}')
+        ax0.axis('off')
+        ax1 = plt.subplot2grid((4, 2), (1, 1))
+        ax1.imshow(visualise_skimage)
+        ax1.set_title(f'Skimage Method in {time_skimage:0.4f}')
+        ax1.axis('off')
+        ax2 = plt.subplot2grid((4, 2), (2, 1))
+        ax2.imshow(visualise_fast)
+        ax2.set_title(f'Fast Method in {time_fast:0.4f}')
+        ax2.axis('off')
+        ax3 = plt.subplot2grid((4, 2), (3, 1))
+        ax3.imshow(visualise_faster)
+        ax3.set_title(f'Faster Method in {time_faster:0.4f}')
+        ax3.axis('off')
+        fig.suptitle(f'{name}: {colours} Colour Clusters', fontsize=16)
+        plt.show()
