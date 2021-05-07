@@ -50,4 +50,5 @@ for name, img_url in img_urls.items():
         ax3.set_title(f'Faster Method in {time_faster:0.4f}')
         ax3.axis('off')
         fig.suptitle(f'{name}: {colours} Colour Clusters', fontsize=16)
-        plt.show()
+        fig.canvas.draw()
+        plt.pause(0.001)
