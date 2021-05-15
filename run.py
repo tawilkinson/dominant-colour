@@ -1,7 +1,8 @@
+from skimage import io
 import os
 import matplotlib.pyplot as plt
-from dominant_colour import cv2_dominant_colour, fast_dominant_colour, sklearn_dominant_colour, visualise_colours
-from skimage import io
+from dominant_colour import (cv2_dominant_colour, fast_dominant_colour,
+                             sklearn_dominant_colour, visualise_colours)
 
 colour_list = [5, 10, 15]
 # Image 1: 6 Nimmt, mostly yellow; Image 2: Altiplano, a wide gamut of colours

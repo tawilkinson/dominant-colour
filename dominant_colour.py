@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 import time
 from cv2 import cv2
 from sklearn.cluster import KMeans
@@ -103,7 +102,7 @@ def sklearn_dominant_colour(img_url,  colours=10, timing=False):
 def fast_dominant_colour(img_url, colours=10, timing=False, scale=1.0):
     '''
     Faster method for web use that speeds up the sklearn variant.
-    Also can use a scaling factor to improve the speed at cost of 
+    Also can use a scaling factor to improve the speed at cost of
     accuracy
     '''
     if timing:
@@ -160,13 +159,14 @@ def visualise_colours(labels, centroids):
     (hist, _) = np.histogram(labels, bins=sorted_labels)
     hist = hist.astype("float")
     hist /= hist.sum()
-    # Create frequency rect and iterate through each cluster's colour and percentage
+    # Create frequency rect and iterate through each cluster's colour
+    # and percentage
     rect = np.zeros((50, 300, 3), dtype=np.uint8)
     colours = sorted(zip(hist, centroids))
     start = 0
     for (percent, colour) in colours:
-        print(f"[{clamp(colour[0])}, {clamp(colour[0])}, {clamp(colour[0])}] ", "{:0.2f}%".format(
-            percent * 100))
+        print(f"[{clamp(colour[0])}, {clamp(colour[0])}, {clamp(colour[0])}] ",
+              "{:0.2f}%".format(percent * 100))
         end = start + (percent * 300)
         cv2.rectangle(rect, (int(start), 0), (int(end), 50),
                       colour.astype("uint8").tolist(), -1)
