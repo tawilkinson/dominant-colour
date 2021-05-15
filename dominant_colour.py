@@ -20,7 +20,7 @@ def cv2_dominant_colour(img_url,  colours=10, timing=False):
     pixels = np.float32(img.reshape(-1, 3))
     if timing:
         toc = time.perf_counter()
-        print(f"Loaded the image in {toc - tic:0.4f} seconds")
+        print(f"Loaded the image in {toc - tic:0.2f}s")
 
     if timing:
         tic = time.perf_counter()
@@ -35,19 +35,19 @@ def cv2_dominant_colour(img_url,  colours=10, timing=False):
     _, counts = np.unique(labels, return_counts=True)
     if timing:
         toc = time.perf_counter()
-        print(f"KMeans calculation in {toc - tic:0.4f} seconds")
+        print(f"KMeans calculation in {toc - tic:0.2f}s")
 
     if timing:
         tic = time.perf_counter()
     dominant = centroid[np.argmax(counts)]
     if timing:
         toc = time.perf_counter()
-        print(f"Dominant selection in {toc - tic:0.4f} seconds")
+        print(f"Dominant selection in {toc - tic:0.2f}s")
 
     if timing:
         end = time.perf_counter()
         total_time = end - start
-        print(f"cv2_dominant_colour execution in {total_time:0.4f} seconds")
+        print(f"cv2_dominant_colour execution in {total_time:0.2f}s")
 
     return dominant, labels, centroid, total_time
 
@@ -64,7 +64,7 @@ def skimage_dominant_colour(img_url,  colours=10, timing=False):
     img = img.reshape((-1, 3))
     if timing:
         toc = time.perf_counter()
-        print(f"Loaded the image in {toc - tic:0.4f} seconds")
+        print(f"Loaded the image in {toc - tic:0.2f}s")
 
     if timing:
         tic = time.perf_counter()
@@ -72,7 +72,7 @@ def skimage_dominant_colour(img_url,  colours=10, timing=False):
     cluster.fit(img)
     if timing:
         toc = time.perf_counter()
-        print(f"KMeans calculation in {toc - tic:0.4f} seconds")
+        print(f"KMeans calculation in {toc - tic:0.2f}s")
 
     labels = cluster.labels_
     labels = list(labels)
@@ -88,7 +88,7 @@ def skimage_dominant_colour(img_url,  colours=10, timing=False):
         percent.append(j)
     if timing:
         toc = time.perf_counter()
-        print(f"Percentage calculation in {toc - tic:0.4f} seconds")
+        print(f"Percentage calculation in {toc - tic:0.2f}s")
 
     indices = np.argsort(percent)[::-1]
     dominant = centroid[indices[0]]
@@ -96,14 +96,14 @@ def skimage_dominant_colour(img_url,  colours=10, timing=False):
         end = time.perf_counter()
         total_time = end - start
         print(
-            f"skimage_dominant_colour execution in {total_time:0.4f} seconds")
+            f"skimage_dominant_colour execution in {total_time:0.2f}s")
     return dominant, labels, centroid, total_time
 
 
 def fast_dominant_colour(img_url, colours=10, timing=False, scale=1.0):
     '''
     Faster method for web use that speeds up the skimage variant.
-    Also can use a scaling factor to improve the spede at cost of 
+    Also can use a scaling factor to improve the speed at cost of 
     accuracy
     '''
     if timing:
@@ -116,7 +116,7 @@ def fast_dominant_colour(img_url, colours=10, timing=False, scale=1.0):
     img = img.reshape((-1, 3))
     if timing:
         toc = time.perf_counter()
-        print(f"Loaded the image in {toc - tic:0.4f} seconds")
+        print(f"Loaded the image in {toc - tic:0.2f}s")
 
     if timing:
         tic = time.perf_counter()
@@ -124,7 +124,7 @@ def fast_dominant_colour(img_url, colours=10, timing=False, scale=1.0):
     cluster.fit(img)
     if timing:
         toc = time.perf_counter()
-        print(f"KMeans calculation in {toc - tic:0.4f} seconds")
+        print(f"KMeans calculation in {toc - tic:0.2f}s")
 
     labels = cluster.labels_
     centroid = cluster.cluster_centers_
@@ -139,14 +139,14 @@ def fast_dominant_colour(img_url, colours=10, timing=False, scale=1.0):
         percent.append(j)
     if timing:
         toc = time.perf_counter()
-        print(f"Percentage calculation in {toc - tic:0.4f} seconds")
+        print(f"Percentage calculation in {toc - tic:0.2f}s")
 
     indices = np.argsort(percent)[::-1]
     dominant = centroid[indices[0]]
     if timing:
         end = time.perf_counter()
         total_time = end - start
-        print(f"fast_dominant_colour execution in {total_time:0.4f} seconds")
+        print(f"fast_dominant_colour execution in {total_time:0.2f}s")
 
     return dominant, labels, centroid, total_time
 
@@ -165,7 +165,8 @@ def visualise_colours(labels, centroids):
     colours = sorted(zip(hist, centroids))
     start = 0
     for (percent, colour) in colours:
-        print(colour, "{:0.2f}%".format(percent * 100))
+        print(f"[{clamp(colour[0])}, {clamp(colour[0])}, {clamp(colour[0])}] ", "{:0.2f}%".format(
+            percent * 100))
         end = start + (percent * 300)
         cv2.rectangle(rect, (int(start), 0), (int(end), 50),
                       colour.astype("uint8").tolist(), -1)
