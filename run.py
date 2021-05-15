@@ -1,12 +1,16 @@
+import os
 import matplotlib.pyplot as plt
-import numpy as np
 from dominant_colour import cv2_dominant_colour, fast_dominant_colour, skimage_dominant_colour, visualise_colours
 from skimage import io
 
 colour_list = [5, 10, 15]
 # Image 1: 6 Nimmt, mostly yellow; Image 2: Altiplano, a wide gamut of colours
-img_urls = {'6 Nimmt!': 'https://images-na.ssl-images-amazon.com/images/I/81HmoJNlUnL._AC_SL1500_.jpg',
+img_urls = {'6 Nimmt': 'https://images-na.ssl-images-amazon.com/images/I/81HmoJNlUnL._AC_SL1500_.jpg',
             'Altiplano': 'https://cf.geekdo-images.com/hgUDu_oG0uhnOWX4WM2vXA__imagepage/img/dDNwKBxSKDViEa1EcHh1QiM8cM4=/fit-in/900x600/filters:no_upscale():strip_icc()/pic4070329.jpg'}
+
+if not os.path.exists('figures'):
+    print('Creating figure dir')
+    os.makedirs('figures')
 
 for name, img_url in img_urls.items():
     for colours in colour_list:
@@ -51,5 +55,6 @@ for name, img_url in img_urls.items():
         ax3.axis('off')
         fig.suptitle(f'{name}: {colours} Colour Clusters', fontsize=16)
         fig.canvas.draw()
+        plt.savefig(f'figures/{name}_{str(colours)}.png')
         plt.pause(0.001)
-input("Press Enter to continue...")
+input('Press Enter to continue...')
