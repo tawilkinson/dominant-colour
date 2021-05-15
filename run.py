@@ -15,9 +15,9 @@ if not os.path.exists('figures'):
 for name, img_url in img_urls.items():
     for colours in colour_list:
         # Call each method to determine dominant colour
-        dominant_cv2, labels_cv2, centroids_cv2, time_cv2 = cv2_dominant_colour(
-            img_url, colours=colours, timing=True)
         dominant_sklearn, labels_sklearn, centroids_sklearn, time_sklearn = sklearn_dominant_colour(
+            img_url, colours=colours, timing=True)
+        dominant_cv2, labels_cv2, centroids_cv2, time_cv2 = cv2_dominant_colour(
             img_url, colours=colours, timing=True)
         dominant_fast, labels_fast, centroids_fast, time_fast = fast_dominant_colour(
             img_url, colours=colours, timing=True)
@@ -25,9 +25,9 @@ for name, img_url in img_urls.items():
             img_url, colours=colours, timing=True, scale=0.1)
 
         # Return image of most dominant colours in histogram
-        visualise_cv2 = visualise_colours(labels_cv2, centroids_cv2)
         visualise_sklearn = visualise_colours(
             labels_sklearn, centroids_sklearn)
+        visualise_cv2 = visualise_colours(labels_cv2, centroids_cv2)
         visualise_fast = visualise_colours(labels_fast, centroids_fast)
         visualise_faster = visualise_colours(labels_faster, centroids_faster)
 
@@ -38,12 +38,12 @@ for name, img_url in img_urls.items():
         ax.imshow(img)
         ax.axis('off')
         ax0 = plt.subplot2grid((4, 2), (0, 1))
-        ax0.imshow(visualise_cv2)
-        ax0.set_title(f'CV2 Method in {time_cv2:0.2f}s')
+        ax0.imshow(visualise_sklearn)
+        ax0.set_title(f'sklearn Method in {time_sklearn:0.2f}s')
         ax0.axis('off')
         ax1 = plt.subplot2grid((4, 2), (1, 1))
-        ax1.imshow(visualise_sklearn)
-        ax1.set_title(f'sklearn Method in {time_sklearn:0.2f}s')
+        ax1.imshow(visualise_cv2)
+        ax1.set_title(f'CV2 Method in {time_cv2:0.2f}s')
         ax1.axis('off')
         ax2 = plt.subplot2grid((4, 2), (2, 1))
         ax2.imshow(visualise_fast)
