@@ -52,9 +52,9 @@ def cv2_dominant_colour(img_url,  colours=10, timing=False):
     return dominant, labels, centroid, total_time
 
 
-def skimage_dominant_colour(img_url,  colours=10, timing=False):
+def sklearn_dominant_colour(img_url,  colours=10, timing=False):
     '''
-    Dominant Colour method using skimage, based on:
+    Dominant Colour method using sklearn, based on:
     https://medium.com/analytics-vidhya/colour-separation-in-an-image-using-kmeans-clustering-using-python-f994fa398454
     '''
     if timing:
@@ -96,13 +96,13 @@ def skimage_dominant_colour(img_url,  colours=10, timing=False):
         end = time.perf_counter()
         total_time = end - start
         print(
-            f"skimage_dominant_colour execution in {total_time:0.2f}s")
+            f"sklearn_dominant_colour execution in {total_time:0.2f}s")
     return dominant, labels, centroid, total_time
 
 
 def fast_dominant_colour(img_url, colours=10, timing=False, scale=1.0):
     '''
-    Faster method for web use that speeds up the skimage variant.
+    Faster method for web use that speeds up the sklearn variant.
     Also can use a scaling factor to improve the speed at cost of 
     accuracy
     '''

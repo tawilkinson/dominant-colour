@@ -1,6 +1,6 @@
 import os
 import matplotlib.pyplot as plt
-from dominant_colour import cv2_dominant_colour, fast_dominant_colour, skimage_dominant_colour, visualise_colours
+from dominant_colour import cv2_dominant_colour, fast_dominant_colour, sklearn_dominant_colour, visualise_colours
 from skimage import io
 
 colour_list = [5, 10, 15]
@@ -17,7 +17,7 @@ for name, img_url in img_urls.items():
         # Call each method to determine dominant colour
         dominant_cv2, labels_cv2, centroids_cv2, time_cv2 = cv2_dominant_colour(
             img_url, colours=colours, timing=True)
-        dominant_skimage, labels_skimage, centroids_skimage, time_skimage = skimage_dominant_colour(
+        dominant_sklearn, labels_sklearn, centroids_sklearn, time_sklearn = sklearn_dominant_colour(
             img_url, colours=colours, timing=True)
         dominant_fast, labels_fast, centroids_fast, time_fast = fast_dominant_colour(
             img_url, colours=colours, timing=True)
@@ -26,8 +26,8 @@ for name, img_url in img_urls.items():
 
         # Return image of most dominant colours in histogram
         visualise_cv2 = visualise_colours(labels_cv2, centroids_cv2)
-        visualise_skimage = visualise_colours(
-            labels_skimage, centroids_skimage)
+        visualise_sklearn = visualise_colours(
+            labels_sklearn, centroids_sklearn)
         visualise_fast = visualise_colours(labels_fast, centroids_fast)
         visualise_faster = visualise_colours(labels_faster, centroids_faster)
 
@@ -42,8 +42,8 @@ for name, img_url in img_urls.items():
         ax0.set_title(f'CV2 Method in {time_cv2:0.2f}s')
         ax0.axis('off')
         ax1 = plt.subplot2grid((4, 2), (1, 1))
-        ax1.imshow(visualise_skimage)
-        ax1.set_title(f'Skimage Method in {time_skimage:0.2f}s')
+        ax1.imshow(visualise_sklearn)
+        ax1.set_title(f'sklearn Method in {time_sklearn:0.2f}s')
         ax1.axis('off')
         ax2 = plt.subplot2grid((4, 2), (2, 1))
         ax2.imshow(visualise_fast)
